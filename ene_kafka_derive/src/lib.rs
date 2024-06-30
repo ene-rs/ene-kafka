@@ -43,7 +43,7 @@ pub fn kafkamessage_derive_macro(input: proc_macro::TokenStream) -> proc_macro::
 ///    content_type = "application/json",
 ///    version = "1.0",
 ///    event_type = "com.ene.SomeEvent.v1",
-///    event_source = "https://ene.com/docs/cloudevents/SomeEvent"
+///    event_source = "https://ene-kafka.com/docs/cloudevents/SomeEvent"
 /// )]
 /// struct SomeEvent {
 ///   pub event_id: i64,

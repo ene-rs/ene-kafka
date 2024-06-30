@@ -11,7 +11,7 @@ use ene_kafka_derive::{CloudEvent, DeserializeFrom, EventHandler, KafkaMessage};
     content_type = "application/json",
     version = "1.0",
     event_type = "com.ene.entity.created.v1",
-    event_source = "https://ene.com/docs/cloudevents/entity/created"
+    event_source = "https://ene-kafka.com/docs/cloudevents/entity/created"
 )]
 struct EntityCreated {
     pub entity_id: i64,
