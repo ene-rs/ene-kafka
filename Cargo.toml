@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "ene_kafka",
+    "ene_kafka_derive",
+    "tests"
+]
