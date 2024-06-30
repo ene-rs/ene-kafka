@@ -1,0 +1,94 @@
+# Ene Kafka: The Opinionated Kafka Framework for Rust
+<p align="center">
+<img src="md_assets/ene-kafka.png"
+     alt="Markdown Monster icon"
+     width=500 />
+</p>
+
+## Introduction
+Ene kafka is a Rust interface that is intended to facilitate the interaction with Apache Kafka in Rust programs. The main goal of Ene kafka is to make the process of building event-driven microservices That use Kafka for their distributed messaging system easier. 
+
+## Examples
+
+Create an event:
+```rust
+#[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize, DeserializeFrom)]
+#[kafka(topic = "test", serde = Json, key = entity_id, headers = CloudEvent)]
+#[cloud_event(
+    content_type = "application/json",
+    version = "1.0",
+    event_type = "com.ene.entity.created.v1",
+    event_source = "https://ene.com/docs/cloudevents/entity/created"
+)]
+struct EntityCreated {
+    pub entity_id: i64,
+    pub organisation_id: i64,
+}
+```
+
+Produce an event:
+```rust
+let producer: KafkaProducer = kafka_producer!(bootstrap_servers = bootstrap_servers.clone());
+    let event = EntityCreated {
+        entity_id: 1755,
+        organisation_id: 42,
+    };
+
+producer.send(event).await?;
+```
+
+Consume an event:
+```rust
+// Create a handler to process the event
+#[derive(EventHandler)]
+#[event_handler(event = EntityCreated, handler = handle_entity_created_event)]
+struct EntityCreatedEventHandler {}
+
+impl EntityCreatedEventHandler {
+    async fn handle_entity_created_event(&self, event: &EntityCreated) -> ene_kafka::KafkaResult<()> {
+        println!("EntityCreatedEventHandler: {:?}", event);
+        // Do something with the event
+        Ok(())
+    }
+}
+
+// Create a consumer that listens to the topic and registers the handler
+let consumer = kafka_consumer!(
+    topic = KafkaTopic {
+        name: "test".to_string(),
+        content_type: ContentType::Json
+    },
+    // Dead letter queueing is included in the consumer!
+    dlq_topic = KafkaTopic {
+        name: "test-dlq".to_string(),
+        content_type: ContentType::Json
+    },
+    consumer_group_id = "test-group",
+    bootstrap_servers = bootstrap_servers,
+    handlers = [
+        EntityCreatedEventHandler -> EntityCreatedEventHandler {}
+    ]
+);
+```
+For more examples, check the [examples](examples/) folder in the repository.
+
+## Features
+- **CloudEvents**: Ene Kafka supports the CloudEvents specification for event messages.
+
+- **Dead Letter Queueing**: Ene Kafka supports dead letter queueing for messages that fail to be handled.
+
+- **Automatic (De)serialization**: Ene Kafka automatically serializes and deserializes messages into the specified event type.
+
+- **Extensiblity**: Ene Kafka is designed with extensibility in mind (though this is still a work in progress). It should be possible to use different underlying clients for Kafka, or to use other serialization libraries instead of serde.
+
+## Limitations
+- **Only JSON format is supported**: Ene Kafka only supports JSON serialization and deserialization at the moment. There is no support for Avro or Protobuf
+
+- **rdKafka is the only supported Kafka client**
+
+- **Ene Kafka is built around CloudEvents** which may not be suitable for all use cases.
+
+- **Limited consumer and producer configurations**: One of the goals of Ene Kafka is to abstract away all the technicalities of Kafka and to make it easier to implement event-driven microservices quickly and reliably. It would however be nice if the consumer and producer configurations could be more flexible. This is something that can be implemented quite easily.
+
+## Open to Contributions
+Ene Kafka is an open-source project and we welcome contributions from the community. If you have any ideas for improvements or new features, please feel free to open an issue or a pull request.
