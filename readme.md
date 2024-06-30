@@ -73,6 +73,8 @@ let consumer = kafka_consumer!(
 For more examples, check the [examples](examples/) folder in the repository.
 
 ## Features
+- **Ease of Use thanks to Rust Macros**: Ene Kafka uses Rust macros to make it easier to define Kafka messages and to produce and consume them. The macros help abstracting away a big chunk of the boilerplate, making it possible for you to focus on what matters most: your business logic.
+
 - **CloudEvents**: Ene Kafka supports the CloudEvents specification for event messages.
 
 - **Dead Letter Queueing**: Ene Kafka supports dead letter queueing for messages that fail to be handled.
