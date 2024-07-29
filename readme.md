@@ -92,7 +92,7 @@ For more examples, check the [examples](ene_kafka_examples/) folder in the repos
 ## Limitations
 - **Only JSON format is supported**: Ene Kafka only supports JSON serialization and deserialization at the moment. There is no support for Avro or Protobuf
 
-- **rdKafka is the only supported Kafka client**
+- **rdKafka is the only supported Kafka client implementation**: Ene kafka is mostly a pretty interface implemented on top of an existing Kafka client for Rust. The intention is to make it possible for the developer to choose between several implementations for Rust. Currently, only rdKafka is supported as this is the most stable option for Rust. We hope to have another, Rust-native, alternative in the future
 
 - **Ene Kafka is built around CloudEvents** which may not be suitable for all use cases.
 
