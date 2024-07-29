@@ -72,7 +72,7 @@ let consumer = kafka_consumer!(
     ]
 );
 ```
-For more examples, check the [examples](examples/) folder in the repository.
+For more examples, check the [examples](ene_kafka_examples/) folder in the repository.
 
 ## Features
 - **Ease of Use thanks to Rust Macros**: Ene Kafka uses Rust macros to make it easier to define Kafka messages and to produce and consume them. The macros help abstracting away a big chunk of the boilerplate, making it possible for you to focus on what matters most: your business logic.
