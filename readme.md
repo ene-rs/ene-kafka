@@ -85,6 +85,8 @@ For more examples, check the [examples](ene_kafka_examples/) folder in the repos
 
 - **Extensiblity**: Ene Kafka is designed with extensibility in mind (though this is still a work in progress). It should be possible to use different underlying clients for Kafka, or to use other serialization libraries instead of serde.
 
+- **Async by default**
+
 ## Limitations
 - **Only JSON format is supported**: Ene Kafka only supports JSON serialization and deserialization at the moment. There is no support for Avro or Protobuf
 
