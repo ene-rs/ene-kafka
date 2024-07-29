@@ -26,10 +26,6 @@ path = "kafka_consumer.rs"
 name = "kafka_producer"
 path = "kafka_producer.rs"
 
-[[example]]
-name = "reactive_microservice"
-path = "reactive_microservice.rs"
-
 
 [dev-dependencies]
 ene_kafka = { workspace = true }
