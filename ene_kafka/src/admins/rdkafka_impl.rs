@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use async_trait::async_trait;
 use rdkafka::{admin::{AdminClient, AdminOptions, ConfigResource, NewTopic, OwnedResourceSpecifier, ResourceSpecifier}, client::DefaultClientContext, config::FromClientConfig, types::RDKafkaErrorCode};
 use tracing::{error, info};
@@ -35,7 +36,7 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
             })
             .map_err(|e| {
                 error!("Error describing topic: {:?}", e);
-                anyhow::Error::msg(e.to_string())
+                anyhow!(e.to_string())
             })
     }
     async fn create_topic_if_not_exists(&self, topic: &str, partitions: i32, replication_factor: i32) -> anyhow::Result<()> {
@@ -66,7 +67,7 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
                 })
                 .map_err(|e| {
                     error!("Error creating topic: {:?}", e);
-                    anyhow::Error::msg(e.to_string())
+                    anyhow!(e.to_string())
                 })?;
         }
         Ok(())
@@ -97,7 +98,7 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
             })
             .map_err(|e| {
                 error!("Error describing topic: {:?}", e);
-                anyhow::Error::msg(e.to_string())
+                anyhow!(e.to_string())
             })
     }
 

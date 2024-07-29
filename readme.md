@@ -6,7 +6,9 @@
 </p>
 
 ## Introduction
-Ene kafka is a Rust interface that is intended to facilitate the interaction with Apache Kafka in Rust programs. The main goal of Ene kafka is to make the process of building event-driven microservices That use Kafka for their distributed messaging system easier. 
+Ene kafka is a Kafka client for Rust that is intended to facilitate the interaction with Apache Kafka in Rust programs. The main goal of Ene kafka is to make the process of building event-driven microservices That use Kafka for their distributed messaging system easier and quicker. 
+
+Ene Kafka uses cloud events to define the structure of messages that are consumed and produced.
 
 ## Examples
 
