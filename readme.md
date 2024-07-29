@@ -39,7 +39,7 @@ let producer: KafkaProducer = kafka_producer!(bootstrap_servers = bootstrap_serv
 producer.send(event).await?;
 ```
 
-Consume an event:
+Consume and handle an event:
 ```rust
 // Create a handler to process the event
 #[derive(EventHandler)]
