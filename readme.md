@@ -44,7 +44,9 @@ Consume an event:
 // Create a handler to process the event
 #[derive(EventHandler)]
 #[event_handler(event = EntityCreated, handler = handle_entity_created_event)]
-struct EntityCreatedEventHandler {}
+struct EntityCreatedEventHandler {
+     // Optionally some state for the handler
+}
 
 impl EntityCreatedEventHandler {
     async fn handle_entity_created_event(&self, event: &EntityCreated) -> ene_kafka::KafkaResult<()> {
@@ -68,7 +70,7 @@ let consumer = kafka_consumer!(
     consumer_group_id = "test-group",
     bootstrap_servers = bootstrap_servers,
     handlers = [
-        EntityCreatedEventHandler -> EntityCreatedEventHandler {}
+        EntityCreatedEventHandler -> EntityCreatedEventHandler { /*Handler state initialisation*/ }
     ]
 );
 ```
