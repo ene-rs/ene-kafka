@@ -5,6 +5,8 @@
      width=500 />
 </p>
 
+Originally a small internal project built for https://enelyzer.com/ to increase code readibility and speed of delivery, but we liked it so much we decided to make it public
+
 ## Introduction
 Ene kafka is a Kafka client for Rust that is intended to facilitate the interaction with Apache Kafka in Rust programs. The main goal of Ene kafka is to make the process of building event-driven microservices That use Kafka for their distributed messaging system easier and quicker. 
 
