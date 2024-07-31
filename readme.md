@@ -1,9 +1,24 @@
 # Ene Kafka: The Opinionated Kafka Framework for Rust
+
 <p align="center">
 <img src="md_assets/ene-kafka.png"
      alt="Markdown Monster icon"
      width=500 />
 </p>
+
+[![Crates.io][crates-badge]][crates-url]
+[![Crates.io][derive-crates-badge]][derive-crates-url]
+[![Apache licensed][license-badge]][license-url]
+[![Build Status][actions-badge]][actions-url]
+
+[crates-badge]: https://img.shields.io/crates/v/ene-kafka.svg?label=ene-kafka
+[crates-url]: https://crates.io/crates/ene-kafka
+[derive-crates-badge]: https://img.shields.io/crates/v/ene-kafka-derive.svg?label=ene-kafka-derive
+[derive-crates-url]: https://crates.io/crates/ene-kafka-derive
+[license-badge]: https://img.shields.io/badge/license-Apache%20v2-blue.svg
+[license-url]: https://github.com/ene-rs/ene-kafka/blob/main/LICENSE
+[actions-badge]: https://github.com/ene-rs/ene-kafka/actions/workflows/rust.yml/badge.svg
+[actions-url]: https://github.com/ene-rs/ene-kafka/actions?query=branch%3Amain
 
 Originally a small internal project built for https://enelyzer.com/ (hence the `Ene` in the name) to increase code readibility and speed of delivery, but we liked it so much we decided to make it public
 
