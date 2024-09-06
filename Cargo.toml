@@ -11,28 +11,27 @@ authors = ["Abdullah Sabaa Allil"]
 edition = "2021"
 license = "Apache-2.0"
 readme = "README.md"
-rust-version = "1.79"
+rust-version = "1.81"
 version = "0.1.0"
 keywords = ["kafka", "microservices", "ene-rs", "ene-kafka", "pubsub"]
 description = "Ene Kafka is an easy-to-use Rust client for Apache Kafka"
 repository = "https://github.com/ene-rs/ene-kafka"
 
 [workspace.dependencies]
-anyhow = "1.0.79"
-async-trait = "0.1.77"
+anyhow = "1.0.86"
+async-trait = "0.1.82"
 chrono = "0.4.38"
 rdkafka = "0.36.2"
-serde = "1.0.195"
-serde_json = "1.0.111"
-tokio = { version = "1.35.1", features = ["rt", "rt-multi-thread", "macros"] }
-uuid = {version = "1.6.1", features = ["v4"]}
-log = "0.4.20"
+serde = "1.0.209"
+serde_json = "1.0.128"
+tokio = { version = "1.40.0", features = ["rt", "rt-multi-thread", "macros"] }
+uuid = {version = "1.10.0", features = ["v4"]}
 tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt", "json"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "fmt", "json"] }
 deluxe = "0.5.0"
 proc-macro2 = "1.0.86"
-quote = "1.0.36"
-syn = "2.0.68"
+quote = "1.0.37"
+syn = "2.0.77"
 ene_kafka = { path = "ene_kafka" }
 ene_kafka_derive = { path = "ene_kafka_derive" }
 
