@@ -115,5 +115,8 @@ For more examples, check the [examples](ene_kafka_examples/) folder in the repos
 
 - **Limited consumer and producer configurations**: One of the goals of Ene Kafka is to abstract away all the technicalities of Kafka and to make it easier to implement event-driven microservices quickly and reliably. It would however be nice if the consumer and producer configurations could be more flexible. This is something that can be implemented quite easily.
 
+## MSRV
+The minimum supported Rust version is 1.70
+
 ## Open to Contributions
 Ene Kafka is an open-source project and we welcome contributions from the community. If you have any ideas for improvements or new features, please feel free to open an issue or a pull request.
