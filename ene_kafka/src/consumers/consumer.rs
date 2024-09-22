@@ -6,7 +6,8 @@ use crate::producers::producer::{KafkaProducer, KafkaProducerInterface};
 use crate::{ConsumerImpl, ProducerImpl};
 
 #[async_trait]
-pub trait KafkaConsumerInterface<Dispatcher: EventDispatcher, InnerProducer: KafkaProducerInterface> {
+pub trait KafkaConsumerInterface<Dispatcher: EventDispatcher, InnerProducer: KafkaProducerInterface>
+{
     fn new(consumer_group_id: String, bootstrap_servers: String) -> Self;
     async fn start<'a>(
         &'a self,
@@ -16,7 +17,6 @@ pub trait KafkaConsumerInterface<Dispatcher: EventDispatcher, InnerProducer: Kaf
         dlq_topic: KafkaTopic,
     );
 }
-
 
 #[derive(Debug, Clone)]
 pub struct KafkaConsumer<
@@ -31,8 +31,11 @@ pub struct KafkaConsumer<
     dlq_producer: KafkaProducer<InnerProducer>,
 }
 
-impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, InnerProducer>, InnerProducer: KafkaProducerInterface>
-    KafkaConsumer<Dispatcher, Consumer, InnerProducer>
+impl<
+        Dispatcher: EventDispatcher,
+        Consumer: KafkaConsumerInterface<Dispatcher, InnerProducer>,
+        InnerProducer: KafkaProducerInterface,
+    > KafkaConsumer<Dispatcher, Consumer, InnerProducer>
 {
     pub fn new(
         topic: KafkaTopic,
@@ -76,7 +79,7 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, I
 /// - `bootstrap_servers` - a string representing the Kafka bootstrap servers
 /// - `handlers` - a list of handle declarations that will be used by this consumer
 /// The handlers need to implement The `EventHandler` trait.
-/// 
+///
 /// Example:
 /// ```rust,ignore
 ///    let consumer = kafka_consumer!(
@@ -96,7 +99,7 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, I
 ///    );
 /// consumer.start().await;
 /// ```
-/// 
+///
 #[macro_export]
 macro_rules! kafka_consumer {
     (
@@ -124,4 +127,3 @@ macro_rules! kafka_consumer {
 
     };
 }
-

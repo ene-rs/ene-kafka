@@ -1,8 +1,8 @@
 use ene_kafka::messages::kafka_message::ContentType;
 use serde::{Deserialize, Serialize};
 
-use ene_kafka::{handlers::EventHandler, messages::kafka_message::KafkaTopic};
 use ene_kafka::kafka_consumer;
+use ene_kafka::{handlers::EventHandler, messages::kafka_message::KafkaTopic};
 use ene_kafka_derive::{CloudEvent, DeserializeFrom, EventHandler, KafkaMessage};
 
 #[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize, DeserializeFrom)]
@@ -59,8 +59,6 @@ async fn main() -> ene_kafka::KafkaResult<()> {
     consumer.start().await;
 
     Ok(())
-
-
 }
 
 #[derive(EventHandler)]
@@ -68,7 +66,10 @@ async fn main() -> ene_kafka::KafkaResult<()> {
 struct EntityCreatedEventHandler {}
 
 impl EntityCreatedEventHandler {
-    async fn handle_entity_created_event(&self, event: &EntityCreated) -> ene_kafka::KafkaResult<()> {
+    async fn handle_entity_created_event(
+        &self,
+        event: &EntityCreated,
+    ) -> ene_kafka::KafkaResult<()> {
         println!("EntityCreatedEventHandler: {:?}", event);
         Ok(())
     }
@@ -79,7 +80,10 @@ impl EntityCreatedEventHandler {
 struct EntityUpdatedHandler {}
 
 impl EntityUpdatedHandler {
-    async fn handle_entity_updated_event(&self, event: &EntityUpdated) -> ene_kafka::KafkaResult<()> {
+    async fn handle_entity_updated_event(
+        &self,
+        event: &EntityUpdated,
+    ) -> ene_kafka::KafkaResult<()> {
         println!("EntityUpdatedHandler: {:?}", event);
         Ok(())
     }

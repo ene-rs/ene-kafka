@@ -22,7 +22,7 @@ pub fn cloudevent_derive_macro2(
         event_source,
         id,
     }: CloudEventAttributes = deluxe::extract_attributes(&mut ast)?;
-    let struct_name = &ast.ident; 
+    let struct_name = &ast.ident;
     let (impl_generics, type_generics, where_clause) = ast.generics.split_for_impl();
     let id_ident = syn::Ident::new(&id.to_string(), struct_name.span());
 

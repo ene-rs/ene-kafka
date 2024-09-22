@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-
 use ene_kafka::producers::producer::KafkaProducerInterface;
 use ene_kafka::{kafka_producer, producers::producer::KafkaProducer};
 use ene_kafka_derive::{CloudEvent, DeserializeFrom, KafkaMessage};

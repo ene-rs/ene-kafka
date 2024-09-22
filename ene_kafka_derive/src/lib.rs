@@ -10,7 +10,7 @@ mod kafka_message;
 /// - `headers` - the name of the field that will be used as the headers. Possible values: `CloudEvent` or `None` (default)
 /// - `payload` - the name of the field that will be used as the payload
 /// - `serde` - the serialization format of the payload. Possible values: `Json`
-/// 
+///
 /// Example:
 /// ```rust,ignore
 /// #[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize)]
@@ -32,9 +32,9 @@ pub fn kafkamessage_derive_macro(input: proc_macro::TokenStream) -> proc_macro::
 /// - `version` - the version of the event
 /// - `event_type` - the type of the event
 /// - `event_source` - the source of the event
-/// 
+///
 /// Implementing `KafkaMessage` is required for this trait to work. The `headers` field of the `KafkaMessage` trait should be set to `CloudEvent`
-/// 
+///
 /// Example:
 /// ```rust, ignore
 /// #[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize)]
@@ -60,7 +60,7 @@ pub fn cloudevent_derive_macro(input: proc_macro::TokenStream) -> proc_macro::To
 /// It requires the following attributes:
 /// - `event` - A concrete type that implements the `CloudEvent` trait
 /// - `handler` - The name of the handler function. This function should be implemented by the struct. It should take a reference to the event it can handle as input.
-/// 
+///
 /// The event type should implement `CloudEvent` as well as `DeserializeFrom` is required for this trait to work.
 /// Example:
 /// ```rust,ignore
@@ -84,7 +84,7 @@ pub fn handler_derive_macro(input: proc_macro::TokenStream) -> proc_macro::Token
 /// It relies on the `KafkaMessage` trait and requires the following attributes:
 /// - `serde` - the serialization format of the payload. Possible values: `Json`
 /// `DeserializeFrom` requires the struct to implement `Deserialize` from the `serde` crate.
-/// 
+///
 /// Example:
 /// ```rust, ignore
 /// #[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize, DeserializeFrom)]

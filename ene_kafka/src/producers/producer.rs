@@ -2,7 +2,10 @@ extern crate proc_macro;
 
 use async_trait::async_trait;
 
-use crate::{messages::kafka_message::{KafkaMessage, ToBytes}, ProducerImpl};
+use crate::{
+    messages::kafka_message::{KafkaMessage, ToBytes},
+    ProducerImpl,
+};
 
 #[async_trait]
 pub trait KafkaProducerInterface: Sync + Send {
@@ -25,7 +28,7 @@ impl<A: KafkaProducerInterface> KafkaProducerInterface for KafkaProducer<A> {
     /// Sends a message to a kafka topic
     /// Arguments:
     /// - `message` - a KafkaMessage
-    /// 
+    ///
     /// Example:
     /// ```rust, ignore
     /// #[derive(KafkaMessage, Serialize, CloudEvent, Debug, Deserialize, DeserializeFrom)]
@@ -40,7 +43,7 @@ impl<A: KafkaProducerInterface> KafkaProducerInterface for KafkaProducer<A> {
     ///     pub entity_id: i64,
     ///     pub organisation_id: i64,
     /// }
-    /// 
+    ///
     /// let producer = kafka_producer!(bootstrap_servers = "localhost:9092".to_string());
     /// let event = EntityCreated {
     ///     entity_id: 1,
@@ -66,7 +69,7 @@ impl<A: KafkaProducerInterface> KafkaProducerInterface for KafkaProducer<A> {
 /// Create a new Kafka producer
 /// Arguments:
 /// - `bootstrap_servers` - a string representing the Kafka bootstrap servers
-/// 
+///
 /// Example:
 /// ```rust, ignore
 /// let producer = kafka_producer!(bootstrap_servers = "localhost:9092".to_string());

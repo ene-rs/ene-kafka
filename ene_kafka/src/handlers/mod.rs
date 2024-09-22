@@ -2,7 +2,6 @@ use async_trait::async_trait;
 
 use crate::messages::cloud_events::cloud_event::{CloudEvent, DeserializeFrom, EventType};
 
-
 #[async_trait]
 pub trait EventHandler<
     InputEvent: CloudEvent<String, String>,
