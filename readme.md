@@ -116,6 +116,15 @@ For more examples, check the [examples](ene_kafka_examples/) folder in the repos
 
 - **Limited consumer and producer configurations**: One of the goals of Ene Kafka is to abstract away all the technicalities of Kafka and to make it easier to implement event-driven microservices quickly and reliably. It would however be nice if the consumer and producer configurations could be more flexible. This is something that can be implemented quite easily.
 
+## Requirements
+Ene kafka requires some depdencnies to be present:
+- anyhow
+- async-trait
+- serde and serde_json
+- tokio
+- rdkafka
+
+
 ## MSRV
 The minimum supported Rust version is 1.70
 
