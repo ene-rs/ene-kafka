@@ -1,6 +1,14 @@
 use anyhow::anyhow;
 use async_trait::async_trait;
-use rdkafka::{admin::{AdminClient, AdminOptions, ConfigResource, NewTopic, OwnedResourceSpecifier, ResourceSpecifier}, client::DefaultClientContext, config::FromClientConfig, types::RDKafkaErrorCode};
+use rdkafka::{
+    admin::{
+        AdminClient, AdminOptions, ConfigResource, NewTopic, OwnedResourceSpecifier,
+        ResourceSpecifier,
+    },
+    client::DefaultClientContext,
+    config::FromClientConfig,
+    types::RDKafkaErrorCode,
+};
 use tracing::{error, info};
 
 use super::KafkaAdminInterface;
@@ -17,7 +25,8 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
                 res.iter().any(|res| match res {
                     Ok(config_resource) => match &config_resource.specifier {
                         OwnedResourceSpecifier::Topic(recieved_topic) => {
-                            let topic_exists = (recieved_topic == topic) && !config_resource.entries.is_empty();
+                            let topic_exists =
+                                (recieved_topic == topic) && !config_resource.entries.is_empty();
                             if topic_exists {
                                 info!("Topic {} exists", topic);
                             };
@@ -39,36 +48,39 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
                 anyhow!(e.to_string())
             })
     }
-    async fn create_topic_if_not_exists(&self, topic: &str, partitions: i32, replication_factor: i32) -> anyhow::Result<()> {
+    async fn create_topic_if_not_exists(
+        &self,
+        topic: &str,
+        partitions: i32,
+        replication_factor: i32,
+    ) -> anyhow::Result<()> {
         let topic_exists = self.verify_topic_existence(topic).await?;
         if !topic_exists {
             let new_topic = NewTopic::new(
                 topic,
                 partitions,
-                rdkafka::admin::TopicReplication::Fixed(
-                    replication_factor,
-                ),
+                rdkafka::admin::TopicReplication::Fixed(replication_factor),
             );
             self.create_topics(
-                    &[new_topic],
-                    &AdminOptions::new()
-                        .request_timeout(Some(std::time::Duration::from_secs(1)))
-                        .operation_timeout(Some(std::time::Duration::from_secs(1))),
-                )
-                .await
-                .map(|res| {
-                    res.iter().all(|res| match res {
-                        Ok(_) => true,
-                        Err(e) => {
-                            error!("Error creating topic: {:?}", e);
-                            false
-                        }
-                    })
+                &[new_topic],
+                &AdminOptions::new()
+                    .request_timeout(Some(std::time::Duration::from_secs(1)))
+                    .operation_timeout(Some(std::time::Duration::from_secs(1))),
+            )
+            .await
+            .map(|res| {
+                res.iter().all(|res| match res {
+                    Ok(_) => true,
+                    Err(e) => {
+                        error!("Error creating topic: {:?}", e);
+                        false
+                    }
                 })
-                .map_err(|e| {
-                    error!("Error creating topic: {:?}", e);
-                    anyhow!(e.to_string())
-                })?;
+            })
+            .map_err(|e| {
+                error!("Error creating topic: {:?}", e);
+                anyhow!(e.to_string())
+            })?;
         }
         Ok(())
     }
@@ -78,8 +90,7 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
         self.describe_configs(vec![&topic_config], &admin_options)
             .await
             .map(|res: Vec<Result<ConfigResource, RDKafkaErrorCode>>| {
-                res.iter().all(|res| 
-                    res.is_ok())
+                res.iter().all(|res| res.is_ok())
                     && res.iter().any(|res| match res {
                         Ok(config_resource) => match &config_resource.specifier {
                             OwnedResourceSpecifier::Topic(recieved_topic) => {
@@ -102,7 +113,11 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
             })
     }
 
-    fn new(bootstrap_servers: String, request_time_out_ms: String, connection_max_idle_ms: String) -> Self {
+    fn new(
+        bootstrap_servers: String,
+        request_time_out_ms: String,
+        connection_max_idle_ms: String,
+    ) -> Self {
         AdminClient::from_config(
             &rdkafka::ClientConfig::new()
                 .set("bootstrap.servers", bootstrap_servers)
@@ -114,5 +129,4 @@ impl KafkaAdminInterface for AdminClient<DefaultClientContext> {
         )
         .expect("Failed to create admin client")
     }
-    
 }

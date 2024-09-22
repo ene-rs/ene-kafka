@@ -44,7 +44,7 @@ impl KafkaMessage<String, String> for OwnedMessage {
     fn topic(&self) -> anyhow::Result<KafkaTopic> {
         Ok(KafkaTopic {
             name: Message::topic(self).to_string(),
-            content_type: ContentType::Json,
+            content_type: ContentType::Json, // TODO: Json is only supported for now
         })
     }
 

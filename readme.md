@@ -37,7 +37,8 @@ Create an event:
     content_type = "application/json",
     version = "1.0",
     event_type = "com.ene.entity.created.v1",
-    event_source = "https://ene-kafka.com/docs/cloudevents/entity/created"
+    event_source = "https://ene-kafka.com/docs/cloudevents/entity/created",
+    id = entity_id,
 )]
 struct EntityCreated {
     pub entity_id: i64,
@@ -86,9 +87,9 @@ let consumer = kafka_consumer!(
     },
     consumer_group_id = "test-group",
     bootstrap_servers = bootstrap_servers,
-    handlers = [
-        EntityCreatedEventHandler -> EntityCreatedEventHandler { /*Handler state initialisation*/ }
-    ]
+    handlers = {
+        entity_created_event_handler: EntityCreatedEventHandler = EntityCreatedEventHandler { /*Handler state initialisation*/ }
+    }
 );
 ```
 For more examples, check the [examples](ene_kafka_examples/) folder in the repository.
@@ -114,6 +115,15 @@ For more examples, check the [examples](ene_kafka_examples/) folder in the repos
 - **Ene Kafka is built around CloudEvents** which may not be suitable for all use cases.
 
 - **Limited consumer and producer configurations**: One of the goals of Ene Kafka is to abstract away all the technicalities of Kafka and to make it easier to implement event-driven microservices quickly and reliably. It would however be nice if the consumer and producer configurations could be more flexible. This is something that can be implemented quite easily.
+
+## Requirements
+Ene kafka requires some depdencnies to be present:
+- anyhow
+- async-trait
+- serde and serde_json
+- tokio
+- rdkafka
+
 
 ## MSRV
 The minimum supported Rust version is 1.70

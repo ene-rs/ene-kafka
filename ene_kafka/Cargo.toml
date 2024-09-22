@@ -23,3 +23,7 @@ tokio = {workspace = true}
 uuid = {workspace = true}
 tracing = {workspace = true}
 tracing-subscriber = {workspace = true}
+
+[features]
+default = ["rdkafka"]
+rdkafka = []

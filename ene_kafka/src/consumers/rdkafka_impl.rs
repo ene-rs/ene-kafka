@@ -10,7 +10,9 @@ use crate::producers::producer::{KafkaProducer, KafkaProducerInterface};
 use super::consumer::KafkaConsumerInterface;
 
 #[async_trait]
-impl<Dispatcher: EventDispatcher> KafkaConsumerInterface<Dispatcher> for StreamConsumer {
+impl<Dispatcher: EventDispatcher, InnerProducer: KafkaProducerInterface>
+    KafkaConsumerInterface<Dispatcher, InnerProducer> for StreamConsumer
+{
     fn new(consumer_group_id: String, bootstrap_servers: String) -> Self {
         tracing::info!("Creating consumer with group ID {}", consumer_group_id);
         // TODO: configure all properties
@@ -27,7 +29,7 @@ impl<Dispatcher: EventDispatcher> KafkaConsumerInterface<Dispatcher> for StreamC
     async fn start<'a>(
         &'a self,
         dispatcher: &'a Dispatcher,
-        dlq_producer: &'a KafkaProducer,
+        dlq_producer: &'a KafkaProducer<InnerProducer>,
         topic: KafkaTopic,
         dlq_topic: KafkaTopic,
     ) {
@@ -40,7 +42,7 @@ impl<Dispatcher: EventDispatcher> KafkaConsumerInterface<Dispatcher> for StreamC
                     tracing::debug!("event: {:?}", event);
                     let result = &dispatcher.dispatch_event(&event).await;
                     match result {
-                        Ok(_) => {}, 
+                        Ok(_) => {}
                         Err(error) => {
                             tracing::error!("consumers::rdkafka_impl::error: {:?}", error);
                             let unhandled_event = event.detach().set_topic(dlq_topic.name.clone());

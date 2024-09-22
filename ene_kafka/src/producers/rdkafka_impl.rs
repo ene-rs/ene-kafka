@@ -32,10 +32,7 @@ impl KafkaProducerInterface for FutureProducer {
         let delivery_status = FutureProducer::send(self, record, Timeout::Never).await;
         match delivery_status {
             Ok(_) => Ok(()),
-            Err(e) => Err(anyhow::anyhow!(format!(
-                "Failed to produce event: {:?}",
-                e
-            ))),
+            Err(e) => Err(anyhow::anyhow!(format!("Failed to produce event: {:?}", e))),
         }
     }
 
