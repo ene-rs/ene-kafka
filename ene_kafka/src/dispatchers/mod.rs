@@ -30,10 +30,10 @@ macro_rules! generate_event_dispatcher {
             use ene_kafka::handlers::EventHandler;
             $(
                 if self.$handler_name.can_handle(event)? {
-                    self.$handler_name.deserialize_and_handle(event).await?;
+                    return self.$handler_name.deserialize_and_handle(event).await;
                 }
             )*
-            Ok(())
+            anyhow::bail!("No handler found for event type {:?}", event.event_type()?);
         }
     }
     }
