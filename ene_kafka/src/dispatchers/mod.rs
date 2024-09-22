@@ -32,10 +32,12 @@ macro_rules! generate_handler_types_enum {
 /// The macro expects a list of handlers that will be used to dispatch the events.
 #[macro_export]
 macro_rules! generate_event_dispatcher {
-    ($($handler: ident $(< $( $generic_identifier:tt $( : $identifier_constraint:tt $(+ $identifier_additions:tt )* )? ),+ >)?),*) => {
-        ene_kafka::generate_handler_types_enum!($($handler $(< $( $generic_identifier $( : $identifier_constraint $(+ $identifier_additions )* )? ),+ >)?),*);
+    ($($handler_name: ident: $handler_type: ident $(< $( $generic_identifier:tt $( : $identifier_constraint:tt $(+ $identifier_additions:tt )* )? ),+ >)?),*) => {
+       // ene_kafka::generate_handler_types_enum!($($handler $(< $( $generic_identifier $( : $identifier_constraint $(+ $identifier_additions )* )? ),+ >)?),*);
         struct CloudEventDispatcher {
-            handlers: Vec<HandlerTypes>,
+           $(
+               $handler_name: $handler_type $(< $( $generic_identifier $( : $identifier_constraint $(+ $identifier_additions )* )? ),+ >)?,
+           )*
         }
 
 
@@ -43,15 +45,12 @@ macro_rules! generate_event_dispatcher {
     impl ene_kafka::dispatchers::EventDispatcher for CloudEventDispatcher {
 
         async fn dispatch_event<Event: ene_kafka::messages::cloud_events::cloud_event::CloudEvent<String, String>>(&self, event: &Event) -> anyhow::Result<()> {
-            for handler in self.handlers.iter() {
-                match handler {
-                    $(HandlerTypes::$handler(handler) => {
-                        if ene_kafka::handlers::EventHandler::can_handle(handler, event)? {
-                            ene_kafka::handlers::EventHandler::deserialize_and_handle(handler, event).await?;
-                        }
-                    }),*
+            use ene_kafka::handlers::EventHandler;
+            $(
+                if self.$handler_name.can_handle(event)? {
+                    self.$handler_name.deserialize_and_handle(event).await?;
                 }
-            }
+            )*
             Ok(())
         }
     }

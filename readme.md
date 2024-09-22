@@ -37,7 +37,8 @@ Create an event:
     content_type = "application/json",
     version = "1.0",
     event_type = "com.ene.entity.created.v1",
-    event_source = "https://ene-kafka.com/docs/cloudevents/entity/created"
+    event_source = "https://ene-kafka.com/docs/cloudevents/entity/created",
+    id = entity_id,
 )]
 struct EntityCreated {
     pub entity_id: i64,
@@ -86,9 +87,9 @@ let consumer = kafka_consumer!(
     },
     consumer_group_id = "test-group",
     bootstrap_servers = bootstrap_servers,
-    handlers = [
-        EntityCreatedEventHandler -> EntityCreatedEventHandler { /*Handler state initialisation*/ }
-    ]
+    handlers = {
+        entity_created_event_handler: EntityCreatedEventHandler = EntityCreatedEventHandler { /*Handler state initialisation*/ }
+    }
 );
 ```
 For more examples, check the [examples](ene_kafka_examples/) folder in the repository.

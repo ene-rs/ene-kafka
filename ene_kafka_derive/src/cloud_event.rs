@@ -8,6 +8,7 @@ struct CloudEventAttributes {
     version: String,
     event_type: String,
     event_source: String,
+    id: syn::Ident,
 }
 
 pub fn cloudevent_derive_macro2(
@@ -19,9 +20,11 @@ pub fn cloudevent_derive_macro2(
         version,
         event_type,
         event_source,
+        id,
     }: CloudEventAttributes = deluxe::extract_attributes(&mut ast)?;
-    let struct_name = &ast.ident;
+    let struct_name = &ast.ident; 
     let (impl_generics, type_generics, where_clause) = ast.generics.split_for_impl();
+    let id_ident = syn::Ident::new(&id.to_string(), struct_name.span());
 
     Ok(quote::quote! {
         impl #impl_generics ene_kafka::messages::cloud_events::cloud_event::CloudEvent<String, String> for #struct_name #type_generics #where_clause {
@@ -38,7 +41,7 @@ pub fn cloudevent_derive_macro2(
             }
 
             fn event_id(&self) -> ene_kafka::KafkaResult<String> {
-                Ok(uuid::Uuid::new_v4().to_string())
+                Ok(self.#id_ident.to_string())
             }
 
             fn event_time(&self) -> ene_kafka::KafkaResult<String> {

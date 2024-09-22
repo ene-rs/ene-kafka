@@ -2,7 +2,7 @@
 members = [
     "ene_kafka",
     "ene_kafka_derive",
-    "ene_kafka_examples",
+    "ene_kafka_examples"
 ]
 resolver = "2"
 

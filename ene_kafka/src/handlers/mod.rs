@@ -22,11 +22,3 @@ pub trait EventHandler<
 
     async fn handle(&self, event: &HandlableEvent) -> anyhow::Result<()>;
 }
-
-#[macro_export]
-macro_rules! create_handlers {
-    ($($handler: expr),*$(,)?) => {
-        vec![$($handler.into()),*] as Vec<HandlerTypes>
-    }
-
-}

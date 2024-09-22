@@ -3,32 +3,36 @@ use async_trait::async_trait;
 use crate::dispatchers::EventDispatcher;
 use crate::messages::kafka_message::KafkaTopic;
 use crate::producers::producer::{KafkaProducer, KafkaProducerInterface};
+use crate::{ConsumerImpl, ProducerImpl};
 
 #[async_trait]
-pub trait KafkaConsumerInterface<Dispatcher: EventDispatcher> {
+pub trait KafkaConsumerInterface<Dispatcher: EventDispatcher, InnerProducer: KafkaProducerInterface> {
     fn new(consumer_group_id: String, bootstrap_servers: String) -> Self;
     async fn start<'a>(
         &'a self,
         dispatcher: &'a Dispatcher,
-        dlq_producer: &'a KafkaProducer,
+        dlq_producer: &'a KafkaProducer<InnerProducer>,
         topic: KafkaTopic,
         dlq_topic: KafkaTopic,
     );
 }
 
+
+#[derive(Debug, Clone)]
 pub struct KafkaConsumer<
     Dispatcher: EventDispatcher,
-    InnerConsumer: KafkaConsumerInterface<Dispatcher> = rdkafka::consumer::StreamConsumer, // Currently, the inner consumer implementation defaults to rdKafka
+    InnerConsumer: KafkaConsumerInterface<Dispatcher, InnerProducer> = ConsumerImpl,
+    InnerProducer: KafkaProducerInterface = ProducerImpl,
 > {
     topic: KafkaTopic,
     dlq_topic: KafkaTopic,
     dispatcher: Dispatcher,
     inner_consumer: InnerConsumer,
-    dlq_producer: KafkaProducer,
+    dlq_producer: KafkaProducer<InnerProducer>,
 }
 
-impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher>>
-    KafkaConsumer<Dispatcher, Consumer>
+impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, InnerProducer>, InnerProducer: KafkaProducerInterface>
+    KafkaConsumer<Dispatcher, Consumer, InnerProducer>
 {
     pub fn new(
         topic: KafkaTopic,
@@ -37,7 +41,7 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher>>
         bootstrap_servers: String,
         handler: Dispatcher,
     ) -> Self {
-        let dlq_producer = <KafkaProducer>::new(bootstrap_servers.clone());
+        let dlq_producer = KafkaProducer::new(bootstrap_servers.clone());
         Self {
             topic,
             dlq_topic,
@@ -71,13 +75,21 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher>>
 /// 
 /// Example:
 /// ```rust,ignore
-/// let consumer = kafka_consumer!(
-///    topic = "test".to_string(),
-///    dlq_topic = "test-dlq".to_string(),
-///    consumer_group_id = "test-consumer".to_string(),
-///    bootstrap_servers = "localhost:9092".to_string(),
-///    handlers = [EntitiyCreated -> entity_created_handler, EntityUpdated -> entity_updated_handler],
-/// );
+///    let consumer = kafka_consumer!(
+///        topic = KafkaTopic {
+///            name: "test".to_string(),
+///            content_type: ContentType::Json
+///        },
+///        dlq_topic = KafkaTopic {
+///            name: "test-dlq".to_string(),
+///            content_type: ContentType::Json
+///        },
+///        consumer_group_id = "test-group",
+///        bootstrap_servers = bootstrap_servers,
+///        handlers = {
+///            entity_created_event_handler: EntityCreatedEventHandler = EntityCreatedEventHandler {}
+///        }
+///    );
 /// consumer.start().await;
 /// ```
 /// 
@@ -88,12 +100,12 @@ macro_rules! kafka_consumer {
         dlq_topic = $dlq_topic: expr,
         consumer_group_id = $consumer_group_id: expr,
         bootstrap_servers = $bootstrap_servers: expr,
-        handlers = [$($handler_type: ident -> $handler: expr),*]$(,)?
+        handlers = {$($handler_name: ident: $handler_type: ident = $handler: expr),*}$(,)?
         $(,)?
     ) => {
         {
 
-            ene_kafka::generate_event_dispatcher!($($handler_type),*);
+            ene_kafka::generate_event_dispatcher!($($handler_name: $handler_type),*);
 
 
             ene_kafka::consumers::consumer::KafkaConsumer::<CloudEventDispatcher>::new(
@@ -101,10 +113,11 @@ macro_rules! kafka_consumer {
                 $dlq_topic,
                 $consumer_group_id.to_string(),
                 $bootstrap_servers.to_string(),
-                CloudEventDispatcher { handlers: ene_kafka::create_handlers!($($handler),*)},
+                CloudEventDispatcher { $($handler_name: $handler),* }
             )
 
         }
 
     };
 }
+

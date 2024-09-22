@@ -1,7 +1,8 @@
 pub mod rdkafka_impl;
 
 use async_trait::async_trait;
-use rdkafka::client::DefaultClientContext;
+
+use crate::AdminImpl;
 
 
 #[async_trait]
@@ -12,7 +13,10 @@ pub trait KafkaAdminInterface {
     fn new(bootstrap_servers: String, request_time_out_ms: String, connection_max_idle_ms: String)-> Self;
 }
 
-pub struct KafkaAdmin<Admin: KafkaAdminInterface = rdkafka::admin::AdminClient<DefaultClientContext>> {
+
+
+#[derive(Debug, Clone)]
+pub struct KafkaAdmin<Admin: KafkaAdminInterface = AdminImpl> {
     admin: Admin,
 }
 
