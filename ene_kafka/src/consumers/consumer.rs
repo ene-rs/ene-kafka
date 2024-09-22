@@ -51,6 +51,10 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, I
         }
     }
 
+    /// Starts the consumer loop
+    /// This function will block the current thread
+    /// It will consume messages from the Kafka topic and dispatch them to the handlers.
+    /// If the message could not be consumed, it will be sent to the dead letter queue.
     pub async fn start(self) {
         self.inner_consumer
             .start(
@@ -70,7 +74,7 @@ impl<Dispatcher: EventDispatcher, Consumer: KafkaConsumerInterface<Dispatcher, I
 /// - `dlq_topic` - a string representing the Kafka dead letter queue topic. If an event could not be consuler, it will be sent to the dead letter queue.
 /// - `consumer_group_id` - a string representing the Kafka consumer group id
 /// - `bootstrap_servers` - a string representing the Kafka bootstrap servers
-/// - `handlers` - a map of handlers and their types to be used by the consumer.
+/// - `handlers` - a list of handle declarations that will be used by this consumer
 /// The handlers need to implement The `EventHandler` trait.
 /// 
 /// Example:
